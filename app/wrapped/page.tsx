@@ -5,6 +5,7 @@ import { getAggregatedHistory } from "@/lib/plex/history"
 import { calculateWrappedStats } from "@/lib/stats/calculator"
 import { getCurrentYear } from "@/lib/utils/dates"
 import { WrappedStory } from "@/app/components/wrapped/WrappedStory"
+import { EmptyState } from "@/app/components/wrapped/EmptyState"
 
 export default async function WrappedPage() {
   const session = await getSession()
@@ -20,7 +21,7 @@ export default async function WrappedPage() {
   const servers = await getServers(session.token, session.clientId)
 
   if (servers.length === 0) {
-    throw new Error("NO_SERVERS")
+    return <EmptyState type="no-servers" year={year} />
   }
 
   // Fetch aggregated history from all servers
@@ -33,7 +34,7 @@ export default async function WrappedPage() {
   )
 
   if (history.length === 0) {
-    throw new Error("NO_HISTORY")
+    return <EmptyState type="no-history" year={year} />
   }
 
   // Calculate stats
